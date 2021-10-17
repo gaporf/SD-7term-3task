@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import ru.ifmo.rain.akimov.database.SQLDataBase;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,6 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 
 public class QueryServletTest {
-    private QueryServlet queryServlet;
 
     @Mock
     private HttpServletRequest request;
@@ -32,22 +32,6 @@ public class QueryServletTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        queryServlet = new QueryServlet();
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-            String sql = "DROP TABLE IF EXISTS PRODUCT";
-            Statement stmt = c.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        }
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-            String sql = "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " PRICE          INT     NOT NULL)";
-            Statement stmt = c.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        }
     }
 
     @Test
@@ -63,6 +47,8 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest1", "--drop-old-table");
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -79,8 +65,9 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("1337");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest2", "--drop-old-table");
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -97,6 +84,7 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -112,8 +100,10 @@ public class QueryServletTest {
         when(request.getParameter("name")).thenReturn("apple");
         when(request.getParameter("price")).thenReturn("100");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
+
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest3", "--drop-old-table");
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -123,7 +113,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("70");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -133,7 +123,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("120");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -143,7 +133,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("75");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -160,6 +150,7 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -183,6 +174,8 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest4", "--drop-old-table");
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -199,8 +192,9 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("1337");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest5", "--drop-old-table");
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -217,6 +211,7 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -232,8 +227,10 @@ public class QueryServletTest {
         when(request.getParameter("name")).thenReturn("apple");
         when(request.getParameter("price")).thenReturn("100");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
+
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest6", "--drop-old-table");
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -243,7 +240,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("70");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -253,7 +250,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("120");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -263,7 +260,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("75");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -280,6 +277,7 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -303,6 +301,8 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest7", "--drop-old-table");
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -319,8 +319,9 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("1337");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest8", "--drop-old-table");
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -337,6 +338,7 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -352,8 +354,10 @@ public class QueryServletTest {
         when(request.getParameter("name")).thenReturn("apple");
         when(request.getParameter("price")).thenReturn("100");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
+
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest9", "--drop-old-table");
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -363,7 +367,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("70");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -373,7 +377,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("120");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -383,7 +387,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("75");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -400,6 +404,7 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -423,6 +428,8 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest10", "--drop-old-table");
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -439,8 +446,9 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("1337");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest11", "--drop-old-table");
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -457,6 +465,7 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -472,8 +481,10 @@ public class QueryServletTest {
         when(request.getParameter("name")).thenReturn("apple");
         when(request.getParameter("price")).thenReturn("100");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
+
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest12", "--drop-old-table");
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -483,7 +494,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("70");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -493,7 +504,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("120");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -503,7 +514,7 @@ public class QueryServletTest {
         when(request.getParameter("price")).thenReturn("75");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet();
+            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -520,6 +531,7 @@ public class QueryServletTest {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();

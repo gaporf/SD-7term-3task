@@ -1,28 +1,26 @@
 package ru.ifmo.rain.akimov.servlet;
 
+import ru.ifmo.rain.akimov.database.SQLDataBase;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 
 public class AddProductServlet extends HttpServlet {
+    final SQLDataBase dataBase;
+
+    public AddProductServlet(final SQLDataBase dataBase) {
+        this.dataBase = dataBase;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String name = request.getParameter("name");
+        String productName = request.getParameter("name");
         long price = Long.parseLong(request.getParameter("price"));
 
         try {
-            try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                String sql = "INSERT INTO PRODUCT " +
-                        "(NAME, PRICE) VALUES (\"" + name + "\"," + price + ")";
-                Statement stmt = c.createStatement();
-                stmt.executeUpdate(sql);
-                stmt.close();
-            }
+            dataBase.addProduct(productName, price);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

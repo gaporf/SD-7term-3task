@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import ru.ifmo.rain.akimov.database.SQLDataBase;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,15 +16,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 
 public class AddProductServletTest {
-    private AddProductServlet addProductServlet;
 
     @Mock
     private HttpServletRequest request;
@@ -32,22 +29,15 @@ public class AddProductServletTest {
     private HttpServletResponse response;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
-        addProductServlet = new AddProductServlet();
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-            String sql = "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " PRICE          INT     NOT NULL)";
-            Statement stmt = c.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        }
     }
 
     @Test
     public void addProductTest() throws IOException {
+        final SQLDataBase dataBase = new SQLDataBase("AddProductServletTest", "--drop-old-table");
+        final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
+
         when(request.getParameter("name")).thenReturn("product");
         when(request.getParameter("price")).thenReturn("1337");
 
