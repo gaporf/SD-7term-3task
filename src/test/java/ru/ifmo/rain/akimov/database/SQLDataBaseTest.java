@@ -154,4 +154,24 @@ public class SQLDataBaseTest {
         Assert.assertTrue(product.isPresent());
         Assert.assertEquals(new DataBaseProduct("milk", 120), product.get());
     }
+
+    @Test
+    public void persistentTableTest() {
+        {
+            final SQLDataBase dataBase = new SQLDataBase("test17", "--drop-old-table");
+            dataBase.addProduct("product", 1337);
+            final List<DataBaseProduct> products = dataBase.getProducts();
+            Assert.assertEquals(List.of(new DataBaseProduct("product", 1337)), products);
+        }
+        {
+            final SQLDataBase dataBase = new SQLDataBase("test17");
+            dataBase.addProduct("product", 1337);
+            final List<DataBaseProduct> products = dataBase.getProducts();
+            Assert.assertEquals(
+                    List.of(
+                            new DataBaseProduct("product", 1337),
+                            new DataBaseProduct("product", 1337)),
+                    products);
+        }
+    }
 }
