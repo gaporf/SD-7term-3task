@@ -4,9 +4,24 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.*;
 
 public class SQLDataBase {
     final String name;
+
+    private void updateSQL(final String sql) {
+        try (final Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
+            final Statement stmt = c.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch (final SQLException e) {
+            throw new SQLDataBaseException("Can't update SQL", e);
+        }
+    }
+
+    private void dropOldTable() {
+        updateSQL("drop table if exists Products");
+    }
 
     public SQLDataBase(final String name) {
         this(name, "");
@@ -20,105 +35,89 @@ public class SQLDataBase {
         if (!parameters.equals("") && !parameters.equals("--drop-old-table")) {
             throw new SQLDataBaseException("Incorrect parameters");
         }
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
-            String sql =
-                    "create table if not exists Products" +
-                            "(id integer primary key autoincrement not null," +
-                            " name text not null, " +
-                            " price int not null)";
-            Statement stmt = c.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        } catch (final SQLException e) {
-            throw new SQLDataBaseException("Can't create database", e);
-        }
-    }
-
-    private void dropOldTable() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
-            String sql =
-                    "drop table if exists Products";
-            Statement stmt = c.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        } catch (final SQLException exception) {
-            throw new SQLDataBaseException("Can't drop table", exception);
-        }
+        updateSQL("create table if not exists Products" +
+                "  (id integer primary key autoincrement not null," +
+                "  name text not null, " +
+                "  price int not null)");
     }
 
     public void addProduct(final String product, final long price) {
+        updateSQL("insert into Products " +
+                "  (name, price) values " +
+                "  ('" + product + "', " + price + ")");
+    }
+
+    private <R> R querySQL(final String sql, final Function<ResultSet, R> resultSetConsumer) {
         try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
-            String sql =
-                    "insert into Products " +
-                            "(name, price) values " +
-                            "('" + product + "', " + price + ")";
-            Statement stmt = c.createStatement();
-            stmt.executeUpdate(sql);
+            final Statement stmt = c.createStatement();
+            final ResultSet rs = stmt.executeQuery(sql);
+            final R result = resultSetConsumer.apply(rs);
             stmt.close();
-        } catch (final SQLException e) {
-            throw new SQLDataBaseException("Can't insert product", e);
+            return result;
+        } catch (final SQLException exception) {
+            throw new SQLDataBaseException("Can't execute query", exception);
         }
     }
 
     public List<DataBaseProduct> getProducts() {
-        final List<DataBaseProduct> products = new ArrayList<>();
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("select name, price from Products");
-            while (rs.next()) {
-                products.add(new DataBaseProduct(rs.getString("name"), rs.getInt("price")));
+        return querySQL("select name, price from Products", rs -> {
+            final List<DataBaseProduct> products = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    products.add(new DataBaseProduct(rs.getString("name"), rs.getInt("price")));
+                }
+            } catch (final SQLException exception) {
+                throw new SQLDataBaseException("Can't get list of products", exception);
             }
-        } catch (final SQLException exception) {
-            throw new SQLDataBaseException("Can't select products", exception);
-        }
-        return products;
+            return products;
+        });
     }
 
     public long getSum() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("select sum(price) from Products");
-            return rs.getLong(1);
-        } catch (final SQLException exception) {
-            throw new SQLDataBaseException("Can't get sum", exception);
-        }
+        return querySQL("select sum(price) from Products", rs -> {
+            try {
+                return rs.getLong(1);
+            } catch (final SQLException exception) {
+                throw new SQLDataBaseException("Can't get sum", exception);
+            }
+        });
     }
 
     public int getCount() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("select count(*) from Products");
-            return rs.getInt(1);
-        } catch (final SQLException exception) {
-            throw new SQLDataBaseException("Can't get count", exception);
-        }
+        return querySQL("select count(*) from Products", rs -> {
+            try {
+                return rs.getInt(1);
+            } catch (final SQLException exception) {
+                throw new SQLDataBaseException("Can't get count", exception);
+            }
+        });
     }
 
     public Optional<DataBaseProduct> getProductWithMinimalPrice() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from Products order by price limit 1");
-            if (!rs.next()) {
-                return Optional.empty();
-            } else {
-                return Optional.of(new DataBaseProduct(rs.getString("name"), rs.getLong("price")));
+        return querySQL("select * from Products order by price limit 1", rs -> {
+            try {
+                if (!rs.next()) {
+                    return Optional.empty();
+                } else {
+                    return Optional.of(new DataBaseProduct(rs.getString("name"), rs.getLong("price")));
+                }
+            } catch (final SQLException exception) {
+                throw new SQLDataBaseException("Can't get product with minimal price", exception);
             }
-        } catch (final SQLException exception) {
-            throw new SQLDataBaseException("Can't get product with minimal price", exception);
-        }
+        });
     }
 
     public Optional<DataBaseProduct> getProductWithMaximalPrice() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + name + ".db")) {
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from Products order by price desc limit 1");
-            if (!rs.next()) {
-                return Optional.empty();
-            } else {
-                return Optional.of(new DataBaseProduct(rs.getString("name"), rs.getLong("price")));
+        return querySQL("select * from Products order by price desc limit 1", rs -> {
+            try {
+                if (!rs.next()) {
+                    return Optional.empty();
+                } else {
+                    return Optional.of(new DataBaseProduct(rs.getString("name"), rs.getLong("price")));
+                }
+            } catch (final SQLException exception) {
+                throw new SQLDataBaseException("Can't get product with maximal price", exception);
             }
-        } catch (final SQLException exception) {
-            throw new SQLDataBaseException("Can't get product with minimal price", exception);
-        }
+        });
     }
 }
