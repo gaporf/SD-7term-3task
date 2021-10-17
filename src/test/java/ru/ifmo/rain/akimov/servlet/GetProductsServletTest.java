@@ -61,8 +61,8 @@ public class GetProductsServletTest {
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
         final SQLDataBase dataBase = new SQLDataBase("GetProductsServletTest2", "--drop-old-table");
+        final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -95,8 +95,8 @@ public class GetProductsServletTest {
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
         final SQLDataBase dataBase = new SQLDataBase("GetProductsServletTest3", "--drop-old-table");
+        final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -108,7 +108,6 @@ public class GetProductsServletTest {
 
         final GetProductsServlet getProductsServlet = new GetProductsServlet(dataBase);
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -118,7 +117,6 @@ public class GetProductsServletTest {
         when(request.getParameter("price")).thenReturn("120");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();
@@ -128,7 +126,6 @@ public class GetProductsServletTest {
         when(request.getParameter("price")).thenReturn("75");
         when(response.getWriter()).thenReturn(new PrintWriter(System.out));
         try {
-            final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
             addProductServlet.doGet(request, response);
         } catch (final Exception ignored) {
             Assert.fail();

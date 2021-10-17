@@ -1,10 +1,8 @@
 package ru.ifmo.rain.akimov.database;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Optional;
 

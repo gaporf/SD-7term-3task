@@ -19,11 +19,7 @@ public class AddProductServlet extends HttpServlet {
         String productName = request.getParameter("name");
         long price = Long.parseLong(request.getParameter("price"));
 
-        try {
-            dataBase.addProduct(productName, price);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        dataBase.addProduct(productName, price);
 
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);

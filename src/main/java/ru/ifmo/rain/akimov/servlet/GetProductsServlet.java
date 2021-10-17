@@ -19,13 +19,14 @@ public class GetProductsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final List<DataBaseProduct> products = dataBase.getProducts();
         response.getWriter().println("<html><body>");
+
+        final List<DataBaseProduct> products = dataBase.getProducts();
         for (final DataBaseProduct product : products) {
             response.getWriter().println(product.getName() + "\t" + product.getPrice() + "</br>");
         }
-        response.getWriter().println("</body></html>");
 
+        response.getWriter().println("</body></html>");
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
     }
