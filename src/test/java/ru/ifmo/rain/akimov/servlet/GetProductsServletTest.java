@@ -30,6 +30,7 @@ public class GetProductsServletTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
         Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
         Mockito.doNothing().when(response).setContentType("text/html");
 
@@ -50,11 +51,12 @@ public class GetProductsServletTest {
 
     @Test
     public void noProductsTest() throws Exception {
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final SQLDataBase dataBase = new SQLDataBase("GetProductsServletTest1", "--drop-old-table");
         final GetProductsServlet getProductsServlet = new GetProductsServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        Mockito.when(response.getWriter()).thenReturn(printWriter);
+
         try {
             getProductsServlet.doGet(request, response);
             printWriter.close();
@@ -69,10 +71,10 @@ public class GetProductsServletTest {
     public void oneProductTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("GetProductsServletTest2", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        addProduct(addProductServlet, "product", 1337);
-
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
+
+        addProduct(addProductServlet, "product", 1337);
+        when(response.getWriter()).thenReturn(printWriter);
 
         final GetProductsServlet getProductsServlet = new GetProductsServlet(dataBase);
         try {
@@ -89,14 +91,14 @@ public class GetProductsServletTest {
     public void manyProductsTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("GetProductsServletTest3", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
+        final GetProductsServlet getProductsServlet = new GetProductsServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
         addProduct(addProductServlet, "apple", 100);
         addProduct(addProductServlet, "banana", 70);
         addProduct(addProductServlet, "milk", 120);
         addProduct(addProductServlet, "cola", 75);
-
-        final GetProductsServlet getProductsServlet = new GetProductsServlet(dataBase);
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
+        when(response.getWriter()).thenReturn(printWriter);
 
         try {
             getProductsServlet.doGet(request, response);

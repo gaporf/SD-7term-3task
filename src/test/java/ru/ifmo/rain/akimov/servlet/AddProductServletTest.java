@@ -31,9 +31,10 @@ public class AddProductServletTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
         Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
         Mockito.doNothing().when(response).setContentType("text/html");
-
+        
         Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
         Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
     }
@@ -42,12 +43,11 @@ public class AddProductServletTest {
     public void addProductTest() throws IOException {
         final SQLDataBase dataBase = new SQLDataBase("AddProductServletTest", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
 
         when(request.getParameter("name")).thenReturn("product");
         when(request.getParameter("price")).thenReturn("1337");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
+        when(response.getWriter()).thenReturn(printWriter);
 
         try {
             addProductServlet.doGet(request, response);

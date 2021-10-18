@@ -30,6 +30,7 @@ public class QueryServletTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
         Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
         Mockito.doNothing().when(response).setContentType("text/html");
 
@@ -50,13 +51,13 @@ public class QueryServletTest {
 
     @Test
     public void sumNothingTest() throws Exception {
-        when(request.getParameter("command")).thenReturn("sum");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest1", "--drop-old-table");
         final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        when(request.getParameter("command")).thenReturn("sum");
+        when(response.getWriter()).thenReturn(printWriter);
+
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -71,14 +72,13 @@ public class QueryServletTest {
     public void sumOneProductTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest2", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        addProduct(addProductServlet, "product", 1337);
-
-        when(request.getParameter("command")).thenReturn("sum");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        addProduct(addProductServlet, "product", 1337);
+        when(request.getParameter("command")).thenReturn("sum");
+        when(response.getWriter()).thenReturn(printWriter);
+
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -93,17 +93,16 @@ public class QueryServletTest {
     public void sumManyProductsTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest3", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
         addProduct(addProductServlet, "apple", 100);
         addProduct(addProductServlet, "banana", 70);
         addProduct(addProductServlet, "milk", 120);
         addProduct(addProductServlet, "cola", 75);
-
         when(request.getParameter("command")).thenReturn("sum");
+        when(response.getWriter()).thenReturn(printWriter);
 
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
-        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -116,13 +115,13 @@ public class QueryServletTest {
 
     @Test
     public void countNothingTest() throws Exception {
-        when(request.getParameter("command")).thenReturn("count");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest4", "--drop-old-table");
         final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        when(request.getParameter("command")).thenReturn("count");
+        when(response.getWriter()).thenReturn(printWriter);
+
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -137,14 +136,13 @@ public class QueryServletTest {
     public void countOneProductTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest5", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        addProduct(addProductServlet, "product", 1337);
-
-        when(request.getParameter("command")).thenReturn("count");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        addProduct(addProductServlet, "product", 1337);
+        when(request.getParameter("command")).thenReturn("count");
+        when(response.getWriter()).thenReturn(printWriter);
+
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -159,17 +157,16 @@ public class QueryServletTest {
     public void countManyProductsTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest6", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
         addProduct(addProductServlet, "apple", 100);
         addProduct(addProductServlet, "banana", 70);
         addProduct(addProductServlet, "milk", 120);
         addProduct(addProductServlet, "cola", 75);
-
         when(request.getParameter("command")).thenReturn("count");
+        when(response.getWriter()).thenReturn(printWriter);
 
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
-        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -182,13 +179,13 @@ public class QueryServletTest {
 
     @Test
     public void maxNothingTest() throws Exception {
-        when(request.getParameter("command")).thenReturn("max");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest7", "--drop-old-table");
         final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        when(request.getParameter("command")).thenReturn("max");
+        when(response.getWriter()).thenReturn(printWriter);
+
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -203,14 +200,13 @@ public class QueryServletTest {
     public void maxOneProductTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest8", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        addProduct(addProductServlet, "product", 1337);
-
-        when(request.getParameter("command")).thenReturn("max");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        addProduct(addProductServlet, "product", 1337);
+        when(request.getParameter("command")).thenReturn("max");
+        when(response.getWriter()).thenReturn(printWriter);
+
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -225,17 +221,16 @@ public class QueryServletTest {
     public void maxManyProductsTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest9", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
         addProduct(addProductServlet, "apple", 100);
         addProduct(addProductServlet, "banana", 70);
         addProduct(addProductServlet, "milk", 120);
         addProduct(addProductServlet, "cola", 75);
-
         when(request.getParameter("command")).thenReturn("max");
+        when(response.getWriter()).thenReturn(printWriter);
 
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
-        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -248,13 +243,13 @@ public class QueryServletTest {
 
     @Test
     public void minNothingTest() throws Exception {
-        when(request.getParameter("command")).thenReturn("min");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest10", "--drop-old-table");
         final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        when(request.getParameter("command")).thenReturn("min");
+        when(response.getWriter()).thenReturn(printWriter);
+
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -269,14 +264,13 @@ public class QueryServletTest {
     public void minOneProductTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest11", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        addProduct(addProductServlet, "product", 1337);
-
-        when(request.getParameter("command")).thenReturn("min");
-
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
         final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
+        addProduct(addProductServlet, "product", 1337);
+        when(request.getParameter("command")).thenReturn("min");
+        when(response.getWriter()).thenReturn(printWriter);
+
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
@@ -291,17 +285,16 @@ public class QueryServletTest {
     public void minManyProductsTest() throws Exception {
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest12", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+
         addProduct(addProductServlet, "apple", 100);
         addProduct(addProductServlet, "banana", 70);
         addProduct(addProductServlet, "milk", 120);
         addProduct(addProductServlet, "cola", 75);
-
         when(request.getParameter("command")).thenReturn("min");
+        when(response.getWriter()).thenReturn(printWriter);
 
-        final PrintWriter printWriter = new PrintWriter("test_file.txt");
-        Mockito.when(response.getWriter()).thenReturn(printWriter);
-
-        final QueryServlet queryServlet = new QueryServlet(dataBase);
         try {
             queryServlet.doGet(request, response);
             printWriter.close();
