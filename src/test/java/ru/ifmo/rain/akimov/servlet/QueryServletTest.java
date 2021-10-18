@@ -304,4 +304,22 @@ public class QueryServletTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void incorrectCommandTest() throws Exception {
+        final SQLDataBase dataBase = new SQLDataBase("QueryServletTest13", "--drop-old-table");
+        final QueryServlet queryServlet = new QueryServlet(dataBase);
+        final PrintWriter printWriter = new PrintWriter("test_file.txt");
+        when(request.getParameter("command")).thenReturn("avg");
+        when(response.getWriter()).thenReturn(printWriter);
+
+        try {
+            queryServlet.doGet(request, response);
+            printWriter.close();
+            final List<String> httpOutput = Files.readAllLines(Paths.get("test_file.txt"));
+            Assert.assertEquals(List.of("Unknown command: avg"), httpOutput);
+        } catch (final Exception ignored) {
+            Assert.fail();
+        }
+    }
 }
