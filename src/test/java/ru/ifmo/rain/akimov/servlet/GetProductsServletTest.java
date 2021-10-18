@@ -11,6 +11,7 @@ import ru.ifmo.rain.akimov.database.SQLDataBase;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,6 +37,17 @@ public class GetProductsServletTest {
         Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
     }
 
+    private void addProduct(final AddProductServlet servlet, final String product, final long price) throws IOException {
+        when(request.getParameter("name")).thenReturn(product);
+        when(request.getParameter("price")).thenReturn(Long.toString(price));
+        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
+        try {
+            servlet.doGet(request, response);
+        } catch (final Exception ignored) {
+            Assert.fail();
+        }
+    }
+
     @Test
     public void noProductsTest() throws Exception {
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
@@ -55,17 +67,9 @@ public class GetProductsServletTest {
 
     @Test
     public void oneProductTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("product");
-        when(request.getParameter("price")).thenReturn("1337");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("GetProductsServletTest2", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "product", 1337);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -83,47 +87,14 @@ public class GetProductsServletTest {
 
     @Test
     public void manyProductsTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("apple");
-        when(request.getParameter("price")).thenReturn("100");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("GetProductsServletTest3", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("banana");
-        when(request.getParameter("price")).thenReturn("70");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
+        addProduct(addProductServlet, "apple", 100);
+        addProduct(addProductServlet, "banana", 70);
+        addProduct(addProductServlet, "milk", 120);
+        addProduct(addProductServlet, "cola", 75);
 
         final GetProductsServlet getProductsServlet = new GetProductsServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("milk");
-        when(request.getParameter("price")).thenReturn("120");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("cola");
-        when(request.getParameter("price")).thenReturn("75");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
