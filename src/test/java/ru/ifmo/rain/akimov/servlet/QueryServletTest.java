@@ -11,6 +11,7 @@ import ru.ifmo.rain.akimov.database.SQLDataBase;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,6 +37,17 @@ public class QueryServletTest {
         Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
     }
 
+    private void addProduct(final AddProductServlet servlet, final String product, final long price) throws IOException {
+        when(request.getParameter("name")).thenReturn(product);
+        when(request.getParameter("price")).thenReturn(Long.toString(price));
+        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
+        try {
+            servlet.doGet(request, response);
+        } catch (final Exception ignored) {
+            Assert.fail();
+        }
+    }
+
     @Test
     public void sumNothingTest() throws Exception {
         when(request.getParameter("command")).thenReturn("sum");
@@ -57,17 +69,9 @@ public class QueryServletTest {
 
     @Test
     public void sumOneProductTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("product");
-        when(request.getParameter("price")).thenReturn("1337");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest2", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "product", 1337);
 
         when(request.getParameter("command")).thenReturn("sum");
 
@@ -87,44 +91,12 @@ public class QueryServletTest {
 
     @Test
     public void sumManyProductsTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("apple");
-        when(request.getParameter("price")).thenReturn("100");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest3", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("banana");
-        when(request.getParameter("price")).thenReturn("70");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("milk");
-        when(request.getParameter("price")).thenReturn("120");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("cola");
-        when(request.getParameter("price")).thenReturn("75");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "apple", 100);
+        addProduct(addProductServlet, "banana", 70);
+        addProduct(addProductServlet, "milk", 120);
+        addProduct(addProductServlet, "cola", 75);
 
         when(request.getParameter("command")).thenReturn("sum");
 
@@ -163,17 +135,9 @@ public class QueryServletTest {
 
     @Test
     public void countOneProductTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("product");
-        when(request.getParameter("price")).thenReturn("1337");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest5", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "product", 1337);
 
         when(request.getParameter("command")).thenReturn("count");
 
@@ -193,44 +157,12 @@ public class QueryServletTest {
 
     @Test
     public void countManyProductsTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("apple");
-        when(request.getParameter("price")).thenReturn("100");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest6", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("banana");
-        when(request.getParameter("price")).thenReturn("70");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("milk");
-        when(request.getParameter("price")).thenReturn("120");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("cola");
-        when(request.getParameter("price")).thenReturn("75");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "apple", 100);
+        addProduct(addProductServlet, "banana", 70);
+        addProduct(addProductServlet, "milk", 120);
+        addProduct(addProductServlet, "cola", 75);
 
         when(request.getParameter("command")).thenReturn("count");
 
@@ -269,17 +201,9 @@ public class QueryServletTest {
 
     @Test
     public void maxOneProductTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("product");
-        when(request.getParameter("price")).thenReturn("1337");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest8", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "product", 1337);
 
         when(request.getParameter("command")).thenReturn("max");
 
@@ -299,44 +223,12 @@ public class QueryServletTest {
 
     @Test
     public void maxManyProductsTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("apple");
-        when(request.getParameter("price")).thenReturn("100");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest9", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("banana");
-        when(request.getParameter("price")).thenReturn("70");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("milk");
-        when(request.getParameter("price")).thenReturn("120");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("cola");
-        when(request.getParameter("price")).thenReturn("75");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "apple", 100);
+        addProduct(addProductServlet, "banana", 70);
+        addProduct(addProductServlet, "milk", 120);
+        addProduct(addProductServlet, "cola", 75);
 
         when(request.getParameter("command")).thenReturn("max");
 
@@ -375,17 +267,9 @@ public class QueryServletTest {
 
     @Test
     public void minOneProductTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("product");
-        when(request.getParameter("price")).thenReturn("1337");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest11", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "product", 1337);
 
         when(request.getParameter("command")).thenReturn("min");
 
@@ -405,44 +289,12 @@ public class QueryServletTest {
 
     @Test
     public void minManyProductsTest() throws Exception {
-        when(request.getParameter("name")).thenReturn("apple");
-        when(request.getParameter("price")).thenReturn("100");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-
         final SQLDataBase dataBase = new SQLDataBase("QueryServletTest12", "--drop-old-table");
         final AddProductServlet addProductServlet = new AddProductServlet(dataBase);
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("banana");
-        when(request.getParameter("price")).thenReturn("70");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("milk");
-        when(request.getParameter("price")).thenReturn("120");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
-
-        when(request.getParameter("name")).thenReturn("cola");
-        when(request.getParameter("price")).thenReturn("75");
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        try {
-            addProductServlet.doGet(request, response);
-        } catch (final Exception ignored) {
-            Assert.fail();
-        }
+        addProduct(addProductServlet, "apple", 100);
+        addProduct(addProductServlet, "banana", 70);
+        addProduct(addProductServlet, "milk", 120);
+        addProduct(addProductServlet, "cola", 75);
 
         when(request.getParameter("command")).thenReturn("min");
 
