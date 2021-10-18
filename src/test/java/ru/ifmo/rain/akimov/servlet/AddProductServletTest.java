@@ -31,6 +31,11 @@ public class AddProductServletTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
+        Mockito.doNothing().when(response).setContentType("text/html");
+
+        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
+        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
     }
 
     @Test
@@ -40,12 +45,6 @@ public class AddProductServletTest {
 
         when(request.getParameter("name")).thenReturn("product");
         when(request.getParameter("price")).thenReturn("1337");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);

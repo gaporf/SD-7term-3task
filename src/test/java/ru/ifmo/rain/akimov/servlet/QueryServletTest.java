@@ -29,17 +29,16 @@ public class QueryServletTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-    }
-
-    @Test
-    public void sumNothingTest() throws Exception {
-        when(request.getParameter("command")).thenReturn("sum");
-
         Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
         Mockito.doNothing().when(response).setContentType("text/html");
 
         Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
         Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Test
+    public void sumNothingTest() throws Exception {
+        when(request.getParameter("command")).thenReturn("sum");
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -71,12 +70,6 @@ public class QueryServletTest {
         }
 
         when(request.getParameter("command")).thenReturn("sum");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -135,12 +128,6 @@ public class QueryServletTest {
 
         when(request.getParameter("command")).thenReturn("sum");
 
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
-
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
@@ -158,12 +145,6 @@ public class QueryServletTest {
     @Test
     public void countNothingTest() throws Exception {
         when(request.getParameter("command")).thenReturn("count");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -195,12 +176,6 @@ public class QueryServletTest {
         }
 
         when(request.getParameter("command")).thenReturn("count");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -259,12 +234,6 @@ public class QueryServletTest {
 
         when(request.getParameter("command")).thenReturn("count");
 
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
-
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
@@ -282,12 +251,6 @@ public class QueryServletTest {
     @Test
     public void maxNothingTest() throws Exception {
         when(request.getParameter("command")).thenReturn("max");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -319,12 +282,6 @@ public class QueryServletTest {
         }
 
         when(request.getParameter("command")).thenReturn("max");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -383,12 +340,6 @@ public class QueryServletTest {
 
         when(request.getParameter("command")).thenReturn("max");
 
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
-
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
 
@@ -406,12 +357,6 @@ public class QueryServletTest {
     @Test
     public void minNothingTest() throws Exception {
         when(request.getParameter("command")).thenReturn("min");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -443,12 +388,6 @@ public class QueryServletTest {
         }
 
         when(request.getParameter("command")).thenReturn("min");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
@@ -506,12 +445,6 @@ public class QueryServletTest {
         }
 
         when(request.getParameter("command")).thenReturn("min");
-
-        Mockito.doThrow(new AssertionError("Expected only text/html")).when(response).setContentType(Mockito.anyString());
-        Mockito.doNothing().when(response).setContentType("text/html");
-
-        Mockito.doThrow(new AssertionError("Expected only OK status")).when(response).setStatus(Mockito.anyInt());
-        Mockito.doNothing().when(response).setStatus(HttpServletResponse.SC_OK);
 
         final PrintWriter printWriter = new PrintWriter("test_file.txt");
         Mockito.when(response.getWriter()).thenReturn(printWriter);
